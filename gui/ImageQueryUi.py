@@ -65,6 +65,8 @@ class Ui_ImageQuery(object):
         self.progressBar.setObjectName("progressBar")
         self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
         self.graphicsView.setGeometry(QtCore.QRect(180, 160, 350, 350))
+        self.graphicsView.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.graphicsView.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.graphicsView.setObjectName("graphicsView")
         self.button_next = QtWidgets.QPushButton(self.centralwidget)
         self.button_next.setGeometry(QtCore.QRect(580, 300, 75, 51))

@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow
 from gui.ImageQueryUi import Ui_ImageQuery
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QGraphicsPixmapItem, QGraphicsScene
+from PyQt5.QtGui import QImage, QPixmap
 
 __author__ = 'Khiem Doan Hoa'
 
@@ -26,15 +27,15 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         self.button_back.clicked.connect(self._clicked_back)
 
     def _clicked_browse_image_data(self):
-        folder_path = QFileDialog.getExistingDirectory(self)
+        folder_path = QFileDialog.getExistingDirectory()
         self.lineEdit_image_data.setText(folder_path)
 
     def _clicked_browse_database(self):
-        folder_path = QFileDialog.getExistingDirectory(self)
+        folder_path = QFileDialog.getExistingDirectory()
         self.lineEdit_database.setText(folder_path)
 
     def _clicked_browse_image(self):
-        file_path = QFileDialog.getOpenFileName(self)
+        file_path = QFileDialog.getOpenFileName()
         self.lineEdit_image.setText(file_path[0])
 
     def _clicked_load_image_data(self):
@@ -50,7 +51,15 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
 
     def _clicked_query_image(self):
         file_path = self.lineEdit_image.text()
-        print(file_path)
+
+        qimage = QImage(file_path)
+        widget_height = self.graphicsView.height()
+        widget_width = self.graphicsView.width()
+        small = qimage.scaled(widget_width, widget_height)
+        item = QGraphicsPixmapItem(QPixmap.fromImage(small))
+        scene = QGraphicsScene()
+        scene.addItem(item)
+        self.graphicsView.setScene(scene)
 
     def _clicked_next(self):
         print('next')
