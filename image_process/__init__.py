@@ -1,3 +1,3 @@
-from .image import Image
+from .manager import Manager
 
-__all__ = ['Image']
+__all__ = ['Manager']
