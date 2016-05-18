@@ -1,4 +1,5 @@
 import cv2
+import numpy
 
 
 __author__ = "Anh Do Nguyet"
@@ -23,11 +24,6 @@ class Image:
         self.__green_hist = cv2.calcHist([img], [1], None, [256], [0, 256])
         self.__red_hist = cv2.calcHist([img], [2], None, [256], [0, 256])
 
-        # chuẩn hoá histogram
-        cv2.normalize(self.__blue_hist, self.__blue_hist, 0, 1, cv2.NORM_MINMAX)
-        cv2.normalize(self.__green_hist, self.__green_hist, 0, 1, cv2.NORM_MINMAX)
-        cv2.normalize(self.__red_hist, self.__red_hist, 0, 1, cv2.NORM_MINMAX)
-
     def get_file_path(self):
         return self.__file_path
 
@@ -37,17 +33,61 @@ class Image:
     def set_category(self, cat):
         self.__category = cat
 
-    def get_blue_histogram(self):
-        return self.__blue_hist
+    def get_blue_histogram(self, bin_number=256):
+        return self.__change_bin_histogram(self.__blue_hist, bin_number)
 
-    def get_green_histogram(self):
-        return self.__green_hist
+    def get_green_histogram(self, bin_number=256):
+        return self.__change_bin_histogram(self.__green_hist, bin_number)
 
-    def get_red_histogram(self):
-        return self.__red_hist
+    def get_red_histogram(self, bin_number=256):
+        return self.__change_bin_histogram(self.__red_hist, bin_number)
 
-    def calc_distance(self, image, method=cv2.HISTCMP_CORREL):
-        d = cv2.compareHist(self.__blue_hist, image.get_blue_histogram(), method)
-        d += cv2.compareHist(self.__green_hist, image.get_green_histogram(), method)
-        d += cv2.compareHist(self.__red_hist, image.get_red_histogram(), method)
-        return d
+    def calc_distance(self, image, bin_number=256):
+        assert 256 % bin_number == 0               # chỉ xét với số bin là ước của 256
+
+        # blue histogram
+        histogram_1 = self.get_blue_histogram(bin_number)
+        histogram_2 = image.get_blue_histogram(bin_number)
+        s = self.__calc_distance_2_histogram(histogram_1, histogram_2)
+
+        # green histogram
+        histogram_1 = self.get_green_histogram(bin_number)
+        histogram_2 = image.get_green_histogram(bin_number)
+        s += self.__calc_distance_2_histogram(histogram_1, histogram_2)
+
+        # red histogram
+        histogram_1 = self.get_red_histogram(bin_number)
+        histogram_2 = image.get_red_histogram(bin_number)
+        s += self.__calc_distance_2_histogram(histogram_1, histogram_2)
+
+        # return sum of all histograms
+        return s
+
+    # chuyển đổi histogram bin 256 sang các bin nhỏ hơn (là ước của 256)
+    def __change_bin_histogram(self, histogram, bin_number):
+        assert type(histogram) is numpy.ndarray
+        assert histogram.shape[0] % bin_number == 0
+        thuong = histogram.shape[0] / bin_number
+
+        # tạo đối tượng lưu trữ histogram mới
+        new_histogram = numpy.empty([bin_number, 1])
+        for i in range(0, new_histogram.shape[0]):
+            new_histogram[i][0] = 0
+
+        # gán giá trị cho histogram mới
+        for i in range(0, histogram.shape[0]):
+            new_histogram[int(i / thuong)][0] += histogram[i][0]
+
+        # chuẩn hoá histogram
+        cv2.normalize(new_histogram, new_histogram, 0, 1, cv2.NORM_MINMAX)
+        return new_histogram
+
+    def __calc_distance_2_histogram(self, histogram_1, histogram_2):
+        assert type(histogram_1) is numpy.ndarray   # chỉ xét với histogram có kiểu dữ liệu là ndarray
+        assert type(histogram_2) is numpy.ndarray
+        assert histogram_1.shape == histogram_2.shape   # chỉ xét với histogram có kích thước giống nhau
+        s = 0
+        for i in range(0, histogram_1.shape[0]):
+            dt = abs(histogram_1[i][0] - histogram_2[i][0])
+            s += dt
+        return s

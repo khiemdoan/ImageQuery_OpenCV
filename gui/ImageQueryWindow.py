@@ -13,8 +13,19 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
     def __init__(self):
         super(ImageQueryWindow, self).__init__()
         self.setupUi(self)
+        self.__setup_ui()
         self.__setup_event()
         self._manager = Manager()
+
+    def __setup_ui(self):
+        self.comboBox_bin_number.addItem('256')
+        self.comboBox_bin_number.addItem('128')
+        self.comboBox_bin_number.addItem('64')
+        self.comboBox_bin_number.addItem('32')
+        self.comboBox_bin_number.addItem('16')
+        self.comboBox_bin_number.addItem('8')
+        self.comboBox_bin_number.addItem('4')
+        self.comboBox_bin_number.addItem('2')
 
     def __setup_event(self):
         self.lineEdit_database.textEdited.connect(self.__changed_database_line_edit)
@@ -95,9 +106,18 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
 
     def __clicked_query_image(self):
         file_path = self.lineEdit_image.text()
-        self._manager.query_image(file_path)
-        file_path = self._manager.get_image()
-        self.__display_result_image(file_path)
+        bin_number = self.comboBox_bin_number.currentText()
+        bin_number = int(bin_number)
+        ret = self._manager.query_image(file_path, bin_number)
+        if ret is None:
+            file_path = self._manager.get_image()
+            self.__display_result_image(file_path)
+        else:
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle('Information')
+            msg_box.setText(ret)
+            msg_box.setIcon(QMessageBox.Information)
+            msg_box.exec()
 
     def __clicked_next(self):
         self._manager.next_image()

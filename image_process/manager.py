@@ -27,7 +27,6 @@ class Manager:
                     image.set_category(item[0])
                 image.read(file_path)
                 self.__images.append(image)
-                print('Cat: ', image.get_category(), ' - ', image.get_file_path())
 
     def set_database(self, path):
         self.__database.set_path(path)
@@ -40,13 +39,17 @@ class Manager:
         self.__images = []
         self.__images = self.__database.loads()
 
-    def query_image(self, file_path):
+    def query_image(self, file_path, bin_number=256):
         if imghdr.what(file_path) is not None:          # xác định xem file đầu vào có phải là file ảnh không
             image = Image()
             image.read(file_path)
             self.__distances = []
+
+            if len(self.__images) == 0:
+                return 'Data is empty!'
+
             for img in self.__images:
-                d = image.calc_distance(img, cv2.HISTCMP_CHISQR)
+                d = image.calc_distance(img, bin_number)
                 self.__distances.append(d)
 
             # sắp xếp kết quả
