@@ -12,6 +12,8 @@ class Manager:
         self.__database = Database()
         self.__images = []
         self.__distances = []
+        self.__result_query = []
+        self.__result_index = 0
 
     def load_image_folder(self, folder_path):
         self.__images = []
@@ -53,16 +55,28 @@ class Manager:
             z = sorted(combined)
             self.__distances, self.__images = zip(*z)
 
+            self.__result_query = []
+            self.__result_index = 0
+            for i in range(0, 100):
+                self.__result_query.append(self.__images[i])
+
             i = 0
             for d in self.__distances:
                 print('khoang cach ', i, ': ', d, " - ", self.__images[i].get_file_path())
                 i += 1
 
     def get_image(self):
-        print('get image: ')
+        if len(self.__result_query) is not 0:
+            img = self.__result_query[self.__result_index]
+            return img.get_file_path()
+        return None
 
     def next_image(self):
-        print('next image')
+        self.__result_index += 1
+        if self.__result_index >= len(self.__result_query):
+            self.__result_index = 0
 
     def back_image(self):
-        print('back image')
+        self.__result_index -= 1
+        if self.__result_index < 0:
+            self.__result_index = len(self.__result_query)

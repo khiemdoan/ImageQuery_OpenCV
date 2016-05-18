@@ -96,9 +96,29 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
     def __clicked_query_image(self):
         file_path = self.lineEdit_image.text()
         self._manager.query_image(file_path)
+        file_path = self._manager.get_image()
+        self.__display_result_image(file_path)
 
     def __clicked_next(self):
         self._manager.next_image()
+        file_path = self._manager.get_image()
+        self.__display_result_image(file_path)
 
     def __clicked_back(self):
         self._manager.back_image()
+        file_path = self._manager.get_image()
+        self.__display_result_image(file_path)
+
+    def __display_result_image(self, file_path):
+        image_reader = QImageReader(file_path)
+        if image_reader.canRead() is True:
+            widget_height = self.resultView.height()
+            widget_width = self.resultView.width()
+            image = image_reader.read().scaled(widget_width, widget_height, Qt.KeepAspectRatio)
+            item = QGraphicsPixmapItem(QPixmap.fromImage(image))
+            scene = QGraphicsScene()
+            scene.addItem(item)
+            self.resultView.setScene(scene)
+        else:
+            scene = QGraphicsScene()
+            self.resultView.setScene(scene)

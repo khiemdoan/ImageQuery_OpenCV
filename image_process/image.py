@@ -24,9 +24,9 @@ class Image:
         self.__red_hist = cv2.calcHist([img], [2], None, [256], [0, 256])
 
         # chuẩn hoá histogram
-        cv2.normalize(self.__blue_hist, self.__blue_hist, 0, 255, cv2.NORM_MINMAX)
-        cv2.normalize(self.__green_hist, self.__green_hist, 0, 255, cv2.NORM_MINMAX)
-        cv2.normalize(self.__red_hist, self.__red_hist, 0, 255, cv2.NORM_MINMAX)
+        cv2.normalize(self.__blue_hist, self.__blue_hist, 0, 1, cv2.NORM_MINMAX)
+        cv2.normalize(self.__green_hist, self.__green_hist, 0, 1, cv2.NORM_MINMAX)
+        cv2.normalize(self.__red_hist, self.__red_hist, 0, 1, cv2.NORM_MINMAX)
 
     def get_file_path(self):
         return self.__file_path
@@ -46,7 +46,7 @@ class Image:
     def get_red_histogram(self):
         return self.__red_hist
 
-    def calc_distance(self, image, method=cv2.HISTCMP_CHISQR):
+    def calc_distance(self, image, method=cv2.HISTCMP_CORREL):
         d = cv2.compareHist(self.__blue_hist, image.get_blue_histogram(), method)
         d += cv2.compareHist(self.__green_hist, image.get_green_histogram(), method)
         d += cv2.compareHist(self.__red_hist, image.get_red_histogram(), method)
