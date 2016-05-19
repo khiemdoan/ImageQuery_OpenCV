@@ -1,7 +1,6 @@
 
 import os
 import imghdr
-import cv2
 from .image import Image
 from .database import Database
 
@@ -41,7 +40,7 @@ class Manager:
         self.__images = []
         self.__images = self.__database.loads()
 
-    def query_image(self, file_path, bin_number=256):
+    def query_image(self, file_path, bin_number=256, top_number=75):
         self.__bin_number = bin_number
         self.__query_result = []
         self.__result_index = 0
@@ -64,7 +63,8 @@ class Manager:
             z = sorted(combined)
             self.__distances, self.__images = zip(*z)
 
-            for i in range(0, 75):
+            top_number = min(top_number, len(self.__images))
+            for i in range(0, top_number):
                 self.__query_result.append(self.__images[i])
 
             # i = 0

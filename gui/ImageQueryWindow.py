@@ -15,7 +15,7 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         self.setupUi(self)
         self.__setup_ui()
         self.__setup_event()
-        self._manager = Manager()
+        self.__manager = Manager()
 
     def __setup_ui(self):
         self.comboBox_bin_number.addItem('256')
@@ -46,9 +46,11 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         self.button_query_histogram.clicked.connect(self.__clicked_show_query_histogram)
         self.button_result_histogram.clicked.connect(self.__clicked_show_result_histogram)
 
+        self.slider_select_top.valueChanged.connect(self.__changed_slider_select_top)
+
     def __changed_database_line_edit(self):
         path = self.lineEdit_database.text()
-        self._manager.set_database(path)
+        self.__manager.set_database(path)
 
     def __changed_image_line_edit(self):
         file_path = self.lineEdit_image.text()
@@ -64,6 +66,10 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         else:
             scene = QGraphicsScene()
             self.queryView.setScene(scene)
+
+    def __changed_slider_select_top(self):
+        value = self.slider_select_top.value()
+        self.label_select_top_value.setText(str(value))
 
     def __clicked_browse_image_data(self):
         dialog = QFileDialog()
@@ -84,7 +90,7 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
 
     def __clicked_load_image_data(self):
         folder_path = self.lineEdit_image_data.text()
-        self._manager.load_image_folder(folder_path)
+        self.__manager.load_image_folder(folder_path)
         msg_box = QMessageBox()
         msg_box.setWindowTitle('Information')
         msg_box.setText('Loading data is successful!')
@@ -92,7 +98,7 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         msg_box.exec()
 
     def __clicked_load_database(self):
-        self._manager.load_database()
+        self.__manager.load_database()
         msg_box = QMessageBox()
         msg_box.setWindowTitle('Information')
         msg_box.setText('Loading data is successful!')
@@ -100,7 +106,7 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         msg_box.exec()
 
     def __clicked_save_database(self):
-        self._manager.save_database()
+        self.__manager.save_database()
         msg_box = QMessageBox()
         msg_box.setWindowTitle('Information')
         msg_box.setText('Saving data is successful!')
@@ -111,9 +117,10 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         file_path = self.lineEdit_image.text()
         bin_number = self.comboBox_bin_number.currentText()
         bin_number = int(bin_number)
-        ret = self._manager.query_image(file_path, bin_number)
+        top_number = self.slider_select_top.value()
+        ret = self.__manager.query_image(file_path, bin_number, top_number)
         if ret is None:
-            file_path = self._manager.get_image()
+            file_path = self.__manager.get_image()
             self.__display_result_image(file_path)
         else:
             msg_box = QMessageBox()
@@ -123,13 +130,13 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
             msg_box.exec()
 
     def __clicked_next(self):
-        self._manager.next_image()
-        file_path = self._manager.get_image()
+        self.__manager.next_image()
+        file_path = self.__manager.get_image()
         self.__display_result_image(file_path)
 
     def __clicked_back(self):
-        self._manager.back_image()
-        file_path = self._manager.get_image()
+        self.__manager.back_image()
+        file_path = self.__manager.get_image()
         self.__display_result_image(file_path)
 
     def __display_result_image(self, file_path):
@@ -150,7 +157,7 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         file_path = self.lineEdit_image.text()
         bin_number = self.comboBox_bin_number.currentText()
         bin_number = int(bin_number)
-        self._manager.draw_query_image_histogram(file_path, bin_number)
+        self.__manager.draw_query_image_histogram(file_path, bin_number)
 
     def __clicked_show_result_histogram(self):
-        self._manager.draw_result_image_histogram()
+        self.__manager.draw_result_image_histogram()
