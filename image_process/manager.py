@@ -12,8 +12,10 @@ class Manager:
         self.__database = Database()
         self.__images = []
         self.__distances = []
-        self.__result_query = []
+        self.__query_result = []
         self.__result_index = 0
+        self.__query_image = None
+        self.__bin_number = 256
 
     def load_image_folder(self, folder_path):
         self.__images = []
@@ -40,16 +42,20 @@ class Manager:
         self.__images = self.__database.loads()
 
     def query_image(self, file_path, bin_number=256):
+        self.__bin_number = bin_number
+        self.__query_result = []
+        self.__result_index = 0
         if imghdr.what(file_path) is not None:          # xác định xem file đầu vào có phải là file ảnh không
-            image = Image()
-            image.read(file_path)
+            self.__query_image = Image()
+            self.__query_image.read(file_path)
             self.__distances = []
 
             if len(self.__images) == 0:
                 return 'Data is empty!'
 
             for img in self.__images:
-                d = image.calc_distance(img, bin_number)
+                d = self.__query_image.calc_distance(img, bin_number)
+                print(img.get_file_path(), ' - distance: ', d)
                 self.__distances.append(d)
 
             # sắp xếp kết quả
@@ -58,28 +64,36 @@ class Manager:
             z = sorted(combined)
             self.__distances, self.__images = zip(*z)
 
-            self.__result_query = []
-            self.__result_index = 0
-            for i in range(0, 100):
-                self.__result_query.append(self.__images[i])
+            for i in range(0, 75):
+                self.__query_result.append(self.__images[i])
 
-            i = 0
-            for d in self.__distances:
-                print('khoang cach ', i, ': ', d, " - ", self.__images[i].get_file_path())
-                i += 1
+            # i = 0
+            # for d in self.__distances:
+            #     print('khoang cach ', i, ': ', d, " - ", self.__images[i].get_file_path())
+            #     i += 1
 
     def get_image(self):
-        if len(self.__result_query) is not 0:
-            img = self.__result_query[self.__result_index]
+        if len(self.__query_result) != 0:
+            img = self.__query_result[self.__result_index]
             return img.get_file_path()
-        return None
 
     def next_image(self):
         self.__result_index += 1
-        if self.__result_index >= len(self.__result_query):
+        if self.__result_index >= len(self.__query_result):
             self.__result_index = 0
 
     def back_image(self):
         self.__result_index -= 1
         if self.__result_index < 0:
-            self.__result_index = len(self.__result_query)
+            self.__result_index = len(self.__query_result)
+
+    def draw_query_image_histogram(self, file_path, bin_number=256):
+        if imghdr.what(file_path) is not None:
+            self.__query_image = Image()
+            self.__query_image.read(file_path)
+            self.__query_image.draw_histogram(bin_number)
+
+    def draw_result_image_histogram(self):
+        if len(self.__query_result) != 0:
+            img = self.__query_result[self.__result_index]
+            img.draw_histogram(self.__bin_number)

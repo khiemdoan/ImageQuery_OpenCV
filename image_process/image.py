@@ -1,6 +1,7 @@
 import cv2
 import numpy
-
+from matplotlib import pyplot
+import os
 
 __author__ = "Anh Do Nguyet"
 
@@ -62,6 +63,21 @@ class Image:
 
         # return sum of all histograms
         return s
+
+    # hiển thị biểu đồ histogram lên pyplot
+    def draw_histogram(self, bin_number=256):
+        blue_hist = self.get_blue_histogram(bin_number)
+        green_hist = self.get_green_histogram(bin_number)
+        red_hist = self.get_red_histogram(bin_number)
+        pyplot.figure()
+        pyplot.title('Histogram of ' + os.path.basename(self.__file_path))
+        pyplot.xlabel("Bins")
+        pyplot.ylabel("So pixel da chuan hoa")
+        pyplot.plot(blue_hist, color='blue')
+        pyplot.plot(green_hist, color='green')
+        pyplot.plot(red_hist, color='red')
+        pyplot.xlim([0, bin_number])
+        pyplot.show()
 
     # chuyển đổi histogram bin 256 sang các bin nhỏ hơn (là ước của 256)
     def __change_bin_histogram(self, histogram, bin_number):

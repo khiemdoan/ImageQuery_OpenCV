@@ -43,6 +43,9 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         self.button_next.clicked.connect(self.__clicked_next)
         self.button_back.clicked.connect(self.__clicked_back)
 
+        self.button_query_histogram.clicked.connect(self.__clicked_show_query_histogram)
+        self.button_result_histogram.clicked.connect(self.__clicked_show_result_histogram)
+
     def __changed_database_line_edit(self):
         path = self.lineEdit_database.text()
         self._manager.set_database(path)
@@ -142,3 +145,12 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         else:
             scene = QGraphicsScene()
             self.resultView.setScene(scene)
+
+    def __clicked_show_query_histogram(self):
+        file_path = self.lineEdit_image.text()
+        bin_number = self.comboBox_bin_number.currentText()
+        bin_number = int(bin_number)
+        self._manager.draw_query_image_histogram(file_path, bin_number)
+
+    def __clicked_show_result_histogram(self):
+        self._manager.draw_result_image_histogram()
