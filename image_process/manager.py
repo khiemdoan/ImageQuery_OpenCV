@@ -74,11 +74,6 @@ class Manager:
             for i in range(0, top_number):
                 self.__query_result.append(self.__images[i])
 
-            # i = 0
-            # for d in self.__distances:
-            #     print('khoang cach ', i, ': ', d, " - ", self.__images[i].get_file_path())
-            #     i += 1
-
     def get_image(self):
         if len(self.__query_result) != 0:
             img = self.__query_result[self.__result_index]
@@ -105,7 +100,7 @@ class Manager:
             img = self.__query_result[self.__result_index]
             img.draw_histogram(self.__bin_number)
 
-    def draw_pr(self, file_path, bin_number=256, top_number=75):
+    def get_pr_curve(self, file_path, bin_number=256, top_number=75):
         if len(self.__images) == 0:
             return 'Data is empty!'
 

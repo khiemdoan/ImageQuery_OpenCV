@@ -48,19 +48,6 @@
      <attribute name="title">
       <string>Data</string>
      </attribute>
-     <widget class="QProgressBar" name="progressBar">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>200</y>
-        <width>651</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="value">
-       <number>0</number>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
@@ -170,19 +157,6 @@
       </property>
       <property name="text">
        <string>Load</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_5">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>180</y>
-        <width>47</width>
-        <height>13</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Progress</string>
       </property>
      </widget>
     </widget>
@@ -355,6 +329,9 @@
         <height>21</height>
        </rect>
       </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
       <property name="maximum">
        <number>100</number>
       </property>
@@ -453,7 +430,7 @@
      <widget class="QLabel" name="label_9">
       <property name="geometry">
        <rect>
-        <x>40</x>
+        <x>20</x>
         <y>60</y>
         <width>31</width>
         <height>16</height>
@@ -466,9 +443,9 @@
      <widget class="QComboBox" name="comboBox_bin_number_pr">
       <property name="geometry">
        <rect>
-        <x>70</x>
+        <x>40</x>
         <y>60</y>
-        <width>69</width>
+        <width>51</width>
         <height>22</height>
        </rect>
       </property>
@@ -476,7 +453,7 @@
      <widget class="QLabel" name="label_10">
       <property name="geometry">
        <rect>
-        <x>170</x>
+        <x>110</x>
         <y>60</y>
         <width>31</width>
         <height>16</height>
@@ -489,14 +466,17 @@
      <widget class="QSlider" name="slider_select_top_pr">
       <property name="geometry">
        <rect>
-        <x>200</x>
+        <x>150</x>
         <y>60</y>
-        <width>281</width>
+        <width>391</width>
         <height>22</height>
        </rect>
       </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
       <property name="maximum">
-       <number>200</number>
+       <number>300</number>
       </property>
       <property name="value">
        <number>75</number>
@@ -514,7 +494,7 @@
      <widget class="QLabel" name="label_select_top_value_pr">
       <property name="geometry">
        <rect>
-        <x>490</x>
+        <x>560</x>
         <y>60</y>
         <width>21</width>
         <height>16</height>
@@ -527,15 +507,26 @@
      <widget class="QPushButton" name="button_draw_pr">
       <property name="geometry">
        <rect>
-        <x>550</x>
-        <y>50</y>
+        <x>600</x>
+        <y>60</y>
         <width>75</width>
         <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>Draw</string>
+       <string>Draw P(R)</string>
       </property>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>100</y>
+        <width>411</width>
+        <height>371</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_pr_curve"/>
      </widget>
     </widget>
    </widget>

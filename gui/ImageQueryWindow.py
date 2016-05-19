@@ -177,7 +177,7 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         bin_number = self.comboBox_bin_number_pr.currentText()
         bin_number = int(bin_number)
         top_number = self.slider_select_top_pr.value()
-        ret = self.__manager.draw_pr(file_path, bin_number, top_number)
+        ret = self.__manager.get_pr_curve(file_path, bin_number, top_number)
         if ret is not None:
             msg_box = QMessageBox()
             msg_box.setWindowTitle('Information')
