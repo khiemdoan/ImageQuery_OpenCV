@@ -18,14 +18,11 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         self.__manager = Manager()
 
     def __setup_ui(self):
-        self.comboBox_bin_number.addItem('256')
-        self.comboBox_bin_number.addItem('128')
-        self.comboBox_bin_number.addItem('64')
-        self.comboBox_bin_number.addItem('32')
-        self.comboBox_bin_number.addItem('16')
-        self.comboBox_bin_number.addItem('8')
-        self.comboBox_bin_number.addItem('4')
-        self.comboBox_bin_number.addItem('2')
+        i = 256
+        while i >= 2:
+            self.comboBox_bin_number.addItem(str(int(i)))
+            self.comboBox_bin_number_pr.addItem(str(int(i)))
+            i /= 2
 
     def __setup_event(self):
         self.lineEdit_database.textEdited.connect(self.__changed_database_line_edit)
@@ -47,6 +44,10 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
         self.button_result_histogram.clicked.connect(self.__clicked_show_result_histogram)
 
         self.slider_select_top.valueChanged.connect(self.__changed_slider_select_top)
+
+        self.slider_select_top_pr.valueChanged.connect(self.__changed_slider_select_top_pr)
+        self.button_browse_image_pr.clicked.connect(self.__clicked_browse_image_pr)
+        self.button_draw_pr.clicked.connect(self.__draw_pr)
 
     def __changed_database_line_edit(self):
         path = self.lineEdit_database.text()
@@ -70,6 +71,10 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
     def __changed_slider_select_top(self):
         value = self.slider_select_top.value()
         self.label_select_top_value.setText(str(value))
+
+    def __changed_slider_select_top_pr(self):
+        value = self.slider_select_top_pr.value()
+        self.label_select_top_value_pr.setText(str(value))
 
     def __clicked_browse_image_data(self):
         dialog = QFileDialog()
@@ -161,3 +166,21 @@ class ImageQueryWindow(QMainWindow, Ui_ImageQuery):
 
     def __clicked_show_result_histogram(self):
         self.__manager.draw_result_image_histogram()
+
+    def __clicked_browse_image_pr(self):
+        dialog = QFileDialog()
+        file_path = dialog.getOpenFileName(options=QFileDialog.Options())
+        self.lineEdit_image_pr.setText(file_path[0])
+
+    def __draw_pr(self):
+        file_path = self.lineEdit_image_pr.text()
+        bin_number = self.comboBox_bin_number_pr.currentText()
+        bin_number = int(bin_number)
+        top_number = self.slider_select_top_pr.value()
+        ret = self.__manager.draw_pr(file_path, bin_number, top_number)
+        if ret is not None:
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle('Information')
+            msg_box.setText(ret)
+            msg_box.setIcon(QMessageBox.Information)
+            msg_box.exec()
